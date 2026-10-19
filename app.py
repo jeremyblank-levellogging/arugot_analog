@@ -11,7 +11,7 @@ st.set_page_config(
 )
 
 st.title("🌊 Water Level Sensor Dashboard")
-st.markdown("Showing sensor readings at Nachal Arugot (**LL**) for the last 48 hours.")
+st.markdown("Showing sensor readings at Nachal Arugot for the last 48 hours.")
 
 
 # TTL of 1800 seconds (30 minutes) caches the download so we don't spam the server
