@@ -1,3 +1,4 @@
+from datetime import timedelta
 from io import StringIO
 import pandas as pd
 import plotly.express as px
@@ -13,20 +14,26 @@ st.title("🌊 Water Level Sensor Dashboard")
 st.markdown("Showing sensor readings (**LL**) for the last 48 hours.")
 
 
-@st.fragment(run_even="1800s")
-def render_dashboard():
+# TTL of 1800 seconds (30 minutes) caches the download so we don't spam the server
+@st.cache_data(ttl=1800)
+def fetch_csv_data():
   csv_url = "https://opendigienvlab.pythonanywhere.com/il.ac.bgu.levintal_water_monitoring_867648049123191_WaterLevelReadings_LL_v1_0.qo"
   auth = HTTPBasicAuth("llvs", "llvs")
+  res = requests.get(csv_url, auth=auth)
+  res.raise_for_status()
+  return res.text
 
+
+@st.fragment(run_every="1800s")
+def render_dashboard():
   try:
-    res = requests.get(csv_url, auth=auth)
-    res.raise_for_status()
-
-    df = pd.read_csv(StringIO(res.text))
+    # Get data safely via cache
+    csv_text = fetch_csv_data()
+    df = pd.read_csv(StringIO(csv_text))
 
     st.sidebar.success(f"Last Refreshed: {pd.Timestamp.now().strftime('%H:%M:%S')}")
 
-    # Explicitly tell Python how your date/time column is structured
+    # Explicitly parse date/time and numeric columns
     df["Time"] = pd.to_datetime(df["Time"], format="%H:%M:%S %d/%m/%Y")
     df["LL"] = pd.to_numeric(df["LL"], errors="coerce")
 
@@ -56,7 +63,9 @@ def render_dashboard():
       st.dataframe(df_filtered, use_container_width=True)
 
   except Exception as e:
-    st.error(f"Failed to fetch water sensor data: {e}")
+    st.error(
+        f"Failed to fetch water sensor data (Server might be rate-limiting): {e}"
+    )
 
 
 render_dashboard()
