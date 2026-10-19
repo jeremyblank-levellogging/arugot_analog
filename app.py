@@ -10,7 +10,7 @@ st.set_page_config(
     page_title="Water Level Sensor Dashboard", page_icon="🌊", layout="wide"
 )
 
-st.title("🌊 Water Level Sensor Dashboard")
+st.title("🌊 HAR Dashboards - Water Level Sensor Dashboard")
 
 
 # TTL of 1800 seconds (30 minutes) caches the download to prevent rate-limiting
@@ -120,7 +120,7 @@ def render_dashboard():
           template="plotly_white",
           title=f"Water Level (LL) - {title_suffix}",
       )
-      fig.update_yaxes(range=[0, 100], title="LL Level")
+      fig.update_yaxes(range=[0, 100], title="LL Level [cm]")
       fig.update_xaxes(title="Time")
       fig.update_layout(hovermode="x unified")
       st.plotly_chart(fig, use_container_width=True)
