@@ -11,7 +11,7 @@ st.set_page_config(
 )
 
 st.title("🌊 Water Level Sensor Dashboard")
-st.markdown("Showing sensor readings (**LL**) for the last 48 hours.")
+st.markdown("Showing sensor readings at Nachal Arugot (**LL**) for the last 48 hours.")
 
 
 # TTL of 1800 seconds (30 minutes) caches the download so we don't spam the server
@@ -54,7 +54,7 @@ def render_dashboard():
       fig = px.line(
           df_filtered, x="Time", y="LL", markers=True, template="plotly_white"
       )
-      fig.update_yaxes(range=[0, 100], title="LL Level")
+      fig.update_yaxes(range=[0, 100], title="LL Level [cm]")
       fig.update_xaxes(title="Time")
       fig.update_layout(hovermode="x unified")
       st.plotly_chart(fig, use_container_width=True)
