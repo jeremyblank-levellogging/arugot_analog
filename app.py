@@ -10,7 +10,7 @@ st.set_page_config(
     page_title="Water Level Sensor Dashboard", page_icon="🌊", layout="wide"
 )
 
-st.title("🌊 HAR Dashboards - Water Level Sensor Dashboard")
+st.title("🌊 HAR Project - Water Level Sensor Dashboard")
 
 
 # TTL of 1800 seconds (30 minutes) caches the download to prevent rate-limiting
@@ -35,6 +35,9 @@ def render_dashboard():
     # Explicitly parse date/time and numeric columns
     df["Time"] = pd.to_datetime(df["Time"], format="%H:%M:%S %d/%m/%Y")
     df["LL"] = pd.to_numeric(df["LL"], errors="coerce")
+
+    # Tag this data source for the legend (easy to add more stations later!)
+    df["Station"] = "nachal arugot"
 
     # --- SIDEBAR TIME FRAME SELECTOR ---
     st.sidebar.markdown("### Dashboard Controls")
@@ -75,7 +78,7 @@ def render_dashboard():
           max_time - pd.Timedelta(days=2)
           if max_time - pd.Timedelta(days=2) > min_time
           else min_time
-    )
+      )
       start_date = st.sidebar.date_input(
           "Start Date",
           value=default_start.date(),
@@ -112,17 +115,22 @@ def render_dashboard():
           if time_option == "Custom Range"
           else f"Past {time_option}"
       )
+
+      # Using color='Station' automatically generates a clean legend label!
       fig = px.line(
           df_filtered,
           x="Time",
           y="LL",
+          color="Station",
           markers=True,
           template="plotly_white",
           title=f"Water Level (LL) - {title_suffix}",
       )
       fig.update_yaxes(range=[0, 100], title="LL Level [cm]")
       fig.update_xaxes(title="Time")
-      fig.update_layout(hovermode="x unified")
+      fig.update_layout(
+          hovermode="x unified", legend_title_text="Monitoring Stations"
+      )
       st.plotly_chart(fig, use_container_width=True)
 
     with st.expander("View Filtered Data Table"):
