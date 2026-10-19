@@ -13,7 +13,7 @@ st.title("🌊 Water Level Sensor Dashboard")
 st.markdown("Showing sensor readings (**LL**) for the last 48 hours.")
 
 
-@st.fragment(run_every="1800s")
+@st.fragment(run_even="1800s")
 def render_dashboard():
   csv_url = "https://opendigienvlab.pythonanywhere.com/il.ac.bgu.levintal_water_monitoring_867648049123191_WaterLevelReadings_LL_v1_0.qo"
   auth = HTTPBasicAuth("llvs", "llvs")
@@ -26,11 +26,11 @@ def render_dashboard():
 
     st.sidebar.success(f"Last Refreshed: {pd.Timestamp.now().strftime('%H:%M:%S')}")
 
-    # Convert columns
-    df["Time"] = pd.to_datetime(df["Time"])
+    # Explicitly tell Python how your date/time column is structured
+    df["Time"] = pd.to_datetime(df["Time"], format="%H:%M:%S %d/%m/%Y")
     df["LL"] = pd.to_numeric(df["LL"], errors="coerce")
 
-    # Filter for last 48 hours relative to latest timestamp in dataset
+    # Filter for last 48 hours relative to the latest timestamp in the dataset
     cutoff_time = df["Time"].max() - pd.Timedelta(hours=48)
     df_filtered = df[df["Time"] >= cutoff_time].sort_values("Time")
 
