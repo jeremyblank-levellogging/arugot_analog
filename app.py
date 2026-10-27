@@ -44,8 +44,8 @@ def render_dashboard():
     time_option = st.sidebar.selectbox(
         "Select Time Frame",
         [
-            "48 Hours",
             "6 Hours",
+            "48 Hours",
             "12 Hours",
             "24 Hours",
             "7 Days",
@@ -53,7 +53,7 @@ def render_dashboard():
             "All Time",
             "Custom Range",
         ],
-        index=0,  # Sets '48 Hours' as the default selection
+        index=0,  # Sets '6 Hours' as the default selection
     )
 
     max_time = df["Time"].max()
@@ -134,7 +134,7 @@ def render_dashboard():
           template="plotly_white",
           title=f"Water Level (LL) - {title_suffix}",
       )
-      fig.update_yaxes(range=[0, 100], title="LL Level [cm]")
+      fig.update_yaxes(range=[0, 120], title="LL Level [cm]")
       fig.update_xaxes(title="Time")
       fig.update_layout(
           hovermode="x unified", legend_title_text="Monitoring Stations"
