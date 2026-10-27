@@ -45,6 +45,8 @@ def render_dashboard():
         "Select Time Frame",
         [
             "48 Hours",
+            "6 Hours",
+            "12 Hours",
             "24 Hours",
             "7 Days",
             "30 Days",
@@ -60,6 +62,12 @@ def render_dashboard():
     # Filter logic based on user selection
     if time_option == "24 Hours":
       cutoff_time = max_time - pd.Timedelta(hours=24)
+      df_filtered = df[df["Time"] >= cutoff_time].sort_values("Time")
+    elif time_option == "12 Hours":
+      cutoff_time = max_time - pd.Timedelta(hours=12)
+      df_filtered = df[df["Time"] >= cutoff_time].sort_values("Time")
+    elif time_option == "6 Hours":
+      cutoff_time = max_time - pd.Timedelta(hours=6)
       df_filtered = df[df["Time"] >= cutoff_time].sort_values("Time")
     elif time_option == "48 Hours":
       cutoff_time = max_time - pd.Timedelta(hours=48)
